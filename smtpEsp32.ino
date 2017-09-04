@@ -5,8 +5,14 @@ WiFiClient client;
 char formatBuffer[256];
 struct tm timeinfo;
 time_t now;
-const unsigned int valueSamples = 2*60;
-float valueBuffer[valueSamples];
+
+typedef struct sample {
+    float battery_voltage;
+    float panel_voltage;
+} Sample;
+
+const unsigned int valueSamples = 60;
+Sample values[valueSamples];
 
 const int   timezone     = -2*3600;
 const char* wifiSSID     = "";
@@ -81,7 +87,7 @@ void sendReport() {
   sendString("\r\n");
 
   for(unsigned int i = 0; i < valueSamples; ++i) {
-    sprintf(formatBuffer, "%f ", valueBuffer[i]);
+    sprintf(formatBuffer, "%f %f\n", values[i].battery_voltage, values[i].panel_voltage);
     sendString(formatBuffer);
   }
 
@@ -113,9 +119,9 @@ void setup() {
   // TODO: https://github.com/espressif/arduino-esp32/blob/master/tools/sdk/include/soc/soc/rtc.h
   // rtc_init, rtc_sleep_init, rtc_sleep_set_wakeup_time, RTC_TIMER_TRIG_EN
 
-  for(unsigned int i = 0; i < valueSamples; i += 2) {
-    valueBuffer[i  ] = measure(34);
-    valueBuffer[i+1] = measure(35);
+  for(unsigned int i = 0; i < valueSamples; i += 1) {
+    values[i].battery_voltage = measure(34);
+    values[i].panel_voltage = measure(35);
   }
   sendReport();
 }
