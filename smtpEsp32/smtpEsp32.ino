@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <time.h>
 #include <esp_deep_sleep.h>
+//#include <soc/rtc.h>
 
 WiFiClient client;
 char formatBuffer[256];
@@ -117,14 +118,25 @@ void setup() {
   WiFi.waitForConnectResult();
   configTime(timezone, 0, ndpSever);
 
-  // TODO: https://github.com/espressif/arduino-esp32/blob/master/tools/sdk/include/soc/soc/rtc.h
-  // rtc_init, rtc_sleep_init, rtc_sleep_set_wakeup_time, RTC_TIMER_TRIG_EN
 
   for(unsigned int i = 0; i < valueSamples; i += 1) {
     values[i].battery_voltage = measure(34);
     values[i].panel_voltage = measure(35);
   }
   sendReport();
+
+
+  // TODO: https://github.com/espressif/arduino-esp32/blob/master/tools/sdk/include/soc/soc/rtc.h
+  // rtc_init, rtc_sleep_init, rtc_sleep_set_wakeup_time, RTC_TIMER_TRIG_EN
+
+/*
+  struct rtc_sleep_config_t slc = RTC_SLEEP_CONFIG_DEFAULT(RTC_SLEEP_PD_RTC_MEM_FOLLOW_CPU);
+  rtc_sleep_init(slc);
+
+  uint64_t n = rtc_time_get();
+  rtc_sleep_set_wakeup_time(n + 1000000);
+  rtc_sleep_start(RTC_TIMER_TRIG_EN, 0);
+  */
 }
 
 void loop() {
