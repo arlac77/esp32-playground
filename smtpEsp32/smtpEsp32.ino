@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <time.h>
+#include <esp_deep_sleep.h>
 
 WiFiClient client;
 char formatBuffer[256];
@@ -128,3 +129,18 @@ void setup() {
 
 void loop() {
 }
+
+
+// https://gist.github.com/igrr/54f7fbe0513ac14e1aea3fd7fbecfeab ?
+
+RTC_DATA_ATTR int wake_count;
+
+void RTC_IRAM_ATTR esp_wake_deep_sleep(void) {
+    esp_default_wake_deep_sleep();
+    // Add additional functionality here
+
+    static RTC_RODATA_ATTR const char fmt_str[] = "Wake count %d\n";
+    ets_printf(fmt_str, wake_count++);
+}
+
+
