@@ -16,6 +16,10 @@ typedef struct sample {
 const unsigned int valueSamples = 60;
 Sample values[valueSamples];
 
+
+#include "config.h"
+
+/*
 const int   timezone     = -2*3600;
 const char* wifiSSID     = "";
 const char* wifiPassword = "";
@@ -27,6 +31,7 @@ const char* recipient    = "";
 const char* subject      = "";
 const char* smtpUsername = "";
 const char* smtpPassword = "";
+*/
 
 void sendString(const char* message) {
   Serial.print(message);
