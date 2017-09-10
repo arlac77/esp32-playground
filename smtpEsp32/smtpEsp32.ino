@@ -18,11 +18,11 @@ typedef struct sample {
     float panel_voltage;
 } Sample;
 
-const unsigned int valueSamples = 50;
+const unsigned int valueSamples = 12;
 RTC_DATA_ATTR Sample values[valueSamples];
 
 #define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP  600      /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP  300      /* Time ESP32 will go to sleep (in seconds) */
 
 #include "config.h"
 
@@ -163,10 +163,12 @@ void setup() {
   localtime_r(&now, &timeinfo);
   strftime(formatBuffer, sizeof(formatBuffer), "%F %T", &timeinfo);
   Serial.println(formatBuffer);
+
+  const int currentSample = bootCount % valueSamples;
   
-  values[bootCount].time = now;
-  values[bootCount].battery_voltage = measure(34);
-  values[bootCount].panel_voltage = measure(35);
+  values[currentSample].time = now;
+  values[currentSample].battery_voltage = measure(34);
+  values[currentSample].panel_voltage = measure(35);
  
   ++bootCount;
  
